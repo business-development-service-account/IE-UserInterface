@@ -1,0 +1,714 @@
+
+# Create the HTML structure for the frontend
+html_content = '''<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI System Interface</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            background: #f5f5f5;
+        }
+
+        .app-container {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Navigation */
+        .nav-sidebar {
+            width: 60px;
+            background: #2c3e50;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 0;
+        }
+
+        .nav-item {
+            width: 40px;
+            height: 40px;
+            margin: 10px 0;
+            cursor: pointer;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #95a5a6;
+            transition: all 0.3s;
+        }
+
+        .nav-item:hover {
+            background: #34495e;
+            color: #ecf0f1;
+        }
+
+        .nav-item.active {
+            background: #3498db;
+            color: white;
+        }
+
+        /* Main Content Areas */
+        .content-area {
+            flex: 1;
+            display: none;
+        }
+
+        .content-area.active {
+            display: flex;
+        }
+
+        /* Projects View */
+        .projects-view {
+            display: flex;
+            width: 100%;
+        }
+
+        .projects-sidebar {
+            width: 280px;
+            background: white;
+            border-right: 1px solid #e0e0e0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .projects-header {
+            padding: 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .create-project-btn {
+            width: 100%;
+            padding: 12px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+
+        .create-project-btn:hover {
+            background: #2980b9;
+        }
+
+        .projects-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .project-item {
+            padding: 12px 16px;
+            margin: 5px 0;
+            background: #f8f9fa;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .project-item:hover {
+            background: #e9ecef;
+        }
+
+        .project-item.active {
+            background: #3498db;
+            color: white;
+        }
+
+        .project-workspace {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .project-header {
+            padding: 20px;
+            background: white;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .project-name {
+            font-size: 20px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .tools-selector {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .tool-dropdown {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            background: white;
+        }
+
+        .chat-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: white;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .messages-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .chat-input-area {
+            padding: 20px;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            resize: none;
+            font-family: inherit;
+        }
+
+        .send-btn {
+            padding: 12px 24px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+
+        .send-btn:hover {
+            background: #2980b9;
+        }
+
+        .bottom-section {
+            height: 300px;
+            display: flex;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .skills-area {
+            flex: 1;
+            background: white;
+            border-right: 1px solid #e0e0e0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .section-header {
+            padding: 15px 20px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e0e0e0;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .skills-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+        }
+
+        .skill-template {
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+
+        .template-field {
+            margin-bottom: 10px;
+        }
+
+        .template-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #7f8c8d;
+            margin-bottom: 5px;
+        }
+
+        .template-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .template-textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            resize: vertical;
+            min-height: 60px;
+            font-family: inherit;
+        }
+
+        .placeholder-text {
+            color: #95a5a6;
+            font-style: italic;
+            font-size: 13px;
+        }
+
+        .add-template-btn {
+            width: 100%;
+            padding: 10px;
+            background: #ecf0f1;
+            border: 1px dashed #bdc3c7;
+            border-radius: 6px;
+            cursor: pointer;
+            color: #7f8c8d;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .add-template-btn:hover {
+            background: #e0e0e0;
+            border-color: #95a5a6;
+        }
+
+        .files-area {
+            flex: 1;
+            background: white;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .files-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+        }
+
+        .file-drop-zone {
+            border: 2px dashed #bdc3c7;
+            border-radius: 6px;
+            padding: 40px;
+            text-align: center;
+            color: #7f8c8d;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .file-drop-zone:hover {
+            border-color: #3498db;
+            color: #3498db;
+        }
+
+        .file-list {
+            margin-top: 15px;
+        }
+
+        .file-item {
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Collections View */
+        .collections-view {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .collections-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .collections-section {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        .collection-dropdown {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            background: white;
+        }
+
+        .collection-form {
+            display: none;
+        }
+
+        .collection-form.active {
+            display: block;
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+
+        .form-field {
+            margin-bottom: 15px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .create-collection-btn {
+            padding: 12px 24px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+
+        .create-collection-btn:hover {
+            background: #2980b9;
+        }
+
+        /* Settings View */
+        .settings-view {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .settings-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .settings-section {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .setting-item {
+            padding: 15px 0;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .setting-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+
+        .setting-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Navigation Sidebar -->
+        <div class="nav-sidebar">
+            <div class="nav-item active" data-view="projects" title="Projects">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                </svg>
+            </div>
+            <div class="nav-item" data-view="collections" title="Collections">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                </svg>
+            </div>
+            <div class="nav-item" data-view="settings" title="Settings">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path d="M12 1v6m0 6v6m5.2-15.2l-4.2 4.2m-4.2 4.2l-4.2 4.2m15.2-5.2h-6m-6 0H1m20.2 5.2l-4.2-4.2m-4.2-4.2l-4.2-4.2"></path>
+                </svg>
+            </div>
+        </div>
+
+        <!-- Projects View -->
+        <div class="content-area active" id="projects-view">
+            <div class="projects-view">
+                <!-- Projects Sidebar -->
+                <div class="projects-sidebar">
+                    <div class="projects-header">
+                        <button class="create-project-btn" id="createProjectBtn">Create New Project</button>
+                    </div>
+                    <div class="projects-list" id="projectsList">
+                    </div>
+                </div>
+
+                <!-- Project Workspace -->
+                <div class="project-workspace">
+                    <!-- Project Header -->
+                    <div class="project-header">
+                        <div class="project-name" id="projectName"></div>
+                        <div class="tools-selector" id="toolsSelector">
+                        </div>
+                    </div>
+
+                    <!-- Chat Area -->
+                    <div class="chat-area">
+                        <div class="messages-container" id="messagesContainer">
+                        </div>
+                        <div class="chat-input-area">
+                            <textarea class="chat-input" id="chatInput" rows="1" placeholder=""></textarea>
+                            <button class="send-btn" id="sendBtn">Send</button>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Section: Skills and Files -->
+                    <div class="bottom-section">
+                        <!-- Skills Area -->
+                        <div class="skills-area">
+                            <div class="section-header">Skills</div>
+                            <div class="skills-list" id="skillsList">
+                                <!-- Initial Template -->
+                                <div class="skill-template">
+                                    <div class="template-field">
+                                        <div class="template-label">Name:</div>
+                                        <input type="text" class="template-input" placeholder="Give it an easy to understand name">
+                                    </div>
+                                    <div class="template-field">
+                                        <div class="template-label">Description:</div>
+                                        <input type="text" class="template-input" placeholder="Give it a short description what this template is for">
+                                    </div>
+                                    <div class="template-field">
+                                        <div class="template-label">Content:</div>
+                                        <textarea class="template-textarea" placeholder="Main content"></textarea>
+                                    </div>
+                                </div>
+                                <button class="add-template-btn" id="addTemplateBtn">+ Add New Template</button>
+                            </div>
+                        </div>
+
+                        <!-- Files Area -->
+                        <div class="files-area">
+                            <div class="section-header">Files</div>
+                            <div class="files-content">
+                                <div class="file-drop-zone" id="fileDropZone">
+                                    Drop files here or click to upload
+                                </div>
+                                <div class="file-list" id="fileList"></div>
+                                <input type="file" id="fileInput" multiple style="display: none;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Collections View -->
+        <div class="content-area" id="collections-view">
+            <div class="collections-view">
+                <div class="collections-container">
+                    <div class="collections-section">
+                        <div class="section-title">Connect a Collection</div>
+                        <select class="collection-dropdown" id="connectCollectionDropdown">
+                            <option value="">Select a collection</option>
+                        </select>
+                    </div>
+
+                    <div class="collections-section">
+                        <div class="section-title">Create a Collection</div>
+                        <button class="create-collection-btn" id="showCreateFormBtn">+ Create New Collection</button>
+                        <div class="collection-form" id="createCollectionForm">
+                            <div class="form-field">
+                                <label class="form-label">Name</label>
+                                <input type="text" class="form-input" id="collectionName">
+                            </div>
+                            <div class="form-field">
+                                <label class="form-label">Description</label>
+                                <textarea class="form-input" id="collectionDescription" rows="3"></textarea>
+                            </div>
+                            <button class="create-collection-btn" id="createCollectionBtn">Create</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings View -->
+        <div class="content-area" id="settings-view">
+            <div class="settings-view">
+                <div class="settings-container">
+                    <div class="settings-section">
+                        <div class="section-title">Settings</div>
+                        <div id="settingsContent"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Navigation
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const view = this.getAttribute('data-view');
+                
+                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+                
+                document.querySelectorAll('.content-area').forEach(area => area.classList.remove('active'));
+                document.getElementById(view + '-view').classList.add('active');
+            });
+        });
+
+        // Create Project Button
+        document.getElementById('createProjectBtn').addEventListener('click', function() {
+            // Backend connection point
+        });
+
+        // Add Template Button
+        document.getElementById('addTemplateBtn').addEventListener('click', function() {
+            const skillsList = document.getElementById('skillsList');
+            const newTemplate = document.createElement('div');
+            newTemplate.className = 'skill-template';
+            newTemplate.innerHTML = `
+                <div class="template-field">
+                    <div class="template-label">Name:</div>
+                    <input type="text" class="template-input" placeholder="Give it an easy to understand name">
+                </div>
+                <div class="template-field">
+                    <div class="template-label">Description:</div>
+                    <input type="text" class="template-input" placeholder="Give it a short description what this template is for">
+                </div>
+                <div class="template-field">
+                    <div class="template-label">Content:</div>
+                    <textarea class="template-textarea" placeholder="Main content"></textarea>
+                </div>
+            `;
+            skillsList.insertBefore(newTemplate, document.getElementById('addTemplateBtn'));
+        });
+
+        // File Upload
+        const fileDropZone = document.getElementById('fileDropZone');
+        const fileInput = document.getElementById('fileInput');
+        const fileList = document.getElementById('fileList');
+
+        fileDropZone.addEventListener('click', () => fileInput.click());
+
+        fileDropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            fileDropZone.style.borderColor = '#3498db';
+            fileDropZone.style.color = '#3498db';
+        });
+
+        fileDropZone.addEventListener('dragleave', () => {
+            fileDropZone.style.borderColor = '#bdc3c7';
+            fileDropZone.style.color = '#7f8c8d';
+        });
+
+        fileDropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            fileDropZone.style.borderColor = '#bdc3c7';
+            fileDropZone.style.color = '#7f8c8d';
+            // Backend connection point for file handling
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            // Backend connection point for file handling
+        });
+
+        // Send Message Button
+        document.getElementById('sendBtn').addEventListener('click', function() {
+            // Backend connection point
+        });
+
+        document.getElementById('chatInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                // Backend connection point
+            }
+        });
+
+        // Collections - Show Create Form
+        document.getElementById('showCreateFormBtn').addEventListener('click', function() {
+            document.getElementById('createCollectionForm').classList.toggle('active');
+        });
+
+        // Collections - Create Button
+        document.getElementById('createCollectionBtn').addEventListener('click', function() {
+            // Backend connection point
+        });
+
+        // Connect Collection Dropdown
+        document.getElementById('connectCollectionDropdown').addEventListener('change', function() {
+            // Backend connection point
+        });
+    </script>
+</body>
+</html>'''
+
+# Save the HTML file
+with open('frontend.html', 'w', encoding='utf-8') as f:
+    f.write(html_content)
+
+print("Frontend HTML file created successfully: frontend.html")
