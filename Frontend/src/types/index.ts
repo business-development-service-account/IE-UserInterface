@@ -17,6 +17,27 @@ export interface User {
   created_at: string;
 }
 
+// File Manager interfaces
+export interface Folder {
+  id: string;
+  name: string;
+  description?: string;
+  parentFolderId?: string;
+  projectIds: number[]; // Projects that have access to this folder
+  created_at: string;
+  updated_at: string;
+  createdBy: number; // User ID
+  path: string; // Full path from root
+  isExpanded: boolean; // For UI state
+}
+
+export interface CreateFolderRequest {
+  name: string;
+  description?: string;
+  parentFolderId?: string;
+  projectIds: number[];
+}
+
 // Project Group for UI grouping functionality
 export interface ProjectGroup {
   id: string;

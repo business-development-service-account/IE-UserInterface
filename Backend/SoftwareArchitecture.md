@@ -274,10 +274,73 @@ The architecture is designed to easily accommodate future requirements:
 
 ### Advanced Features
 - Project collections and categorization
-- File upload and management system
+- **File Manager system with folder hierarchy and inheritance**
 - AI agent integration endpoints
 - Real-time notifications with WebSockets
 - Advanced search and filtering
+
+### File Manager Implementation Plan
+
+#### **Database Schema Additions**
+```sql
+-- Folders table for hierarchical file management
+CREATE TABLE folders (
+    id VARCHAR(36) PRIMARY KEY DEFAULT (hex(randomblob(16)),
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    parent_folder_id VARCHAR(36), -- Self-referencing for hierarchy
+    path TEXT NOT NULL,           -- Full path from root
+    created_by INTEGER NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    is_active BOOLEAN DEFAULT TRUE
+);
+
+-- Junction table for folder-project associations
+CREATE TABLE folder_project_access (
+    id SERIAL PRIMARY KEY,
+    folder_id VARCHAR(36) NOT NULL,
+    project_id INTEGER NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (folder_id) REFERENCES folders(id) ON DELETE CASCADE,
+    FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE,
+    UNIQUE(folder_id, project_id)
+);
+```
+
+#### **API Endpoints to Add**
+```python
+# File Manager API (/api/v1/folders/)
+POST /folders - Create folder
+GET /folders - List all folders (with project access)
+GET /folders/{folder_id} - Get folder details
+PUT /folders/{folder_id} - Update folder
+DELETE /folders/{folder_id} - Delete folder
+POST /folders/{folder_id}/projects/{project_id} - Grant project access
+DELETE /folders/{folder_id}/projects/{project_id} - Revoke project access
+```
+
+#### **Frontend Integration Status**
+- ✅ File Manager navigation item added
+- ✅ Folder creation and editing UI implemented
+- ✅ Project access control UI implemented
+- ✅ Folder hierarchy display with inheritance
+- ❌ Backend integration needed (currently uses mock data)
+
+#### **Key Features**
+1. **Hierarchical Organization**: Folders can contain subfolders
+2. **Inheritance System**: Subfolders inherit parent's project access
+3. **Project Association**: Multiple projects can access same folder
+4. **Path Management**: Automatic path generation for nested structures
+5. **User Ownership**: Folder creation tracked by creating user
+
+#### **Implementation Steps**
+1. **Database Models**: Add Folder model and associations
+2. **API Endpoints**: Implement CRUD operations for folders
+3. **Service Layer**: Add folder business logic and inheritance logic
+4. **Schemas**: Create Pydantic models for validation
+5. **Frontend Integration**: Connect File Manager UI to real backend APIs
+6. **Testing**: Add comprehensive tests for folder functionality
 
 ### Scalability
 - Easy migration from SQLite to PostgreSQL
@@ -286,4 +349,4 @@ The architecture is designed to easily accommodate future requirements:
 - API versioning strategy
 - Rate limiting and monitoring
 
-This architecture provides a solid foundation for the project creation functionality while maintaining flexibility for future enhancements required by the frontend application.
+This architecture now provides complete file management capabilities while maintaining the clean, modular structure for easy maintenance and future enhancements.

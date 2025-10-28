@@ -5,13 +5,14 @@ from fastapi.responses import JSONResponse
 from app.core.config import settings
 from app.api.v1.endpoints import projects
 from app.utils.exceptions import DatabaseException
+from auth_implementation.api.endpoints import auth as auth_router
 
 
 # Create FastAPI application
 app = FastAPI(
     title=settings.app_name,
     version=settings.app_version,
-    description="A RESTful API for managing projects",
+    description="A RESTful API for managing projects with user authentication and authorization",
     docs_url="/docs",
     redoc_url="/redoc",
 )
@@ -19,7 +20,7 @@ app = FastAPI(
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # For development - restrict in production
+    allow_origins=settings.cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -28,6 +29,7 @@ app.add_middleware(
 # Include API routers
 api_v1_prefix = "/api/v1"
 app.include_router(projects.router, prefix=api_v1_prefix, tags=["projects"])
+app.include_router(auth_router.router, prefix=api_v1_prefix, tags=["authentication"])
 
 
 @app.exception_handler(DatabaseException)
